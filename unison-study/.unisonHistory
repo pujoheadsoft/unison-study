@@ -1,0 +1,11 @@
+square 4
+update
+run square
+run helloWorld
+compile helloWorld scratch
+?
+losf scratch.u
+update
+run helloWorld
+update
+project.create hello-world
