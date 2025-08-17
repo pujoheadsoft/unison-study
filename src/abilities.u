@@ -1,0 +1,83 @@
+
+effectfulPredicate.stopIfTrue : (a -> {g} Boolean) -> a -> {g, Abort} a
+effectfulPredicate.stopIfTrue pred a =
+  if pred a then Abort.abort else a
+
+store.stopIfTrue : (a -> Boolean) -> a -> {Abort, Store a} a
+store.stopIfTrue pred a =
+  Store.put a
+  if pred a then Abort.abort else a
+
+-- これはエラーになる(↓のように定義するとエラーにならない)
+-- nonEmptyName : Text -> {} Text
+-- nonEmptyName name =
+--   stopIfTrue (text -> text === "") name
+
+usingAblitiesPt1.nonEmptyName : Text -> Text
+usingAblitiesPt1.nonEmptyName name =
+  -- 関数定義
+  optionalName : Optional Text
+  optionalName =
+    toOptional! do
+      effectfulPredicate.stopIfTrue (text -> text === "") name
+  Optional.getOrElse "Unknown Name" optionalName
+
+store.nonEmptyName : Text -> Text
+store.nonEmptyName name =
+  storeIsHandled : '{Abort} Text
+  storeIsHandled =
+    do
+      withInitialValue "Store Default Value" do
+        store.stopIfTrue (text -> text === "") name
+  abortIsHandled : Optional Text
+  abortIsHandled = toOptional! storeIsHandled
+  Optional.getOrElse "Optional Default Value" abortIsHandled
+
+-- abilitiesはファイルのトップレベルで未処理のままにしておくことができない
+-- 以下のように遅延させればよい
+-- tryEmit : {Stream Text}()
+-- tryEmit = Stream.emit "Hi"
+
+tryEmit1 : '{Stream Text}()
+tryEmit1 = do Stream.emit "Hello World"
+
+tryEmit2 : '{Stream Text}()
+tryEmit2 _ =
+  Stream.emit "Hello World"
+
+tryEmit3 : '{Stream Text}()
+tryEmit3 = '(Stream.emit "Hello World")
+
+nameGreet : '{IO, Exception} ()
+nameGreet _ =
+  use Text ++
+  printLine "Enter your name:"
+  name = readLine()
+  printLine ("Hello " ++ name)
+
+
+unique ability Ask a where
+  ask : a
+
+unique ability Emit a where
+  emit : a -> ()
+
+emitAsk : '{Emit a, Ask a} ()
+emitAsk = do
+  askValue = Ask.ask
+  Emit.emit askValue
+
+ask.handler : a -> Request {g, Ask a} a -> {g} a
+ask.handler v = cases
+  { a }            -> a
+  { Ask.ask -> k } -> handle k v with ask.handler v
+
+executeAsk : '{Ask Text, IO, Exception} ()
+executeAsk = do
+  v = Ask.ask
+  printLine(v)
+
+-- exampleAsk : '{IO, Exception} ()
+-- exampleAsk =
+--   handle executeAsk
+--   with (ask.handler "value")
