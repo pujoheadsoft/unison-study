@@ -1,3 +1,28 @@
+run runExampleAsk
+run helloWorld
+helloWorld
+find
+add
+find
+io.test runExampleAsk
+runExampleAsk "Hello"
+add
+load abilities.u
+runExampleAsk "Hello"
+add
+update
+add
+runExampleAsk "Hello"
+view runExampleAsk
+run runExampleAsk "Hello"
+run runExampleAsk("Hello")
+runExampleAsk("Hello")
+runExampleAsk "Hello"
+run runExampleAsk "Hello"
+find
+update
+find
+update
 find
 update
 find

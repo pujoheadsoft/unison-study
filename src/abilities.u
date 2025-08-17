@@ -67,17 +67,17 @@ emitAsk = do
   askValue = Ask.ask
   Emit.emit askValue
 
-ask.handler : a -> Request {g, Ask a} a -> {g} a
+ask.handler : a -> Request {g, Ask a} r -> {g} r
 ask.handler v = cases
   { a }            -> a
   { Ask.ask -> k } -> handle k v with ask.handler v
 
-executeAsk : '{Ask Text, IO, Exception} ()
-executeAsk = do
+exampleAsk : '{Ask Text, IO, Exception} ()
+exampleAsk = do
   v = Ask.ask
-  printLine(v)
+  printLine v
 
--- exampleAsk : '{IO, Exception} ()
--- exampleAsk =
---   handle executeAsk
---   with (ask.handler "value")
+runExampleAsk : '{IO, Exception} ()
+runExampleAsk = do
+  handle exampleAsk() with ask.handler "Hello"
+
