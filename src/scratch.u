@@ -6,3 +6,7 @@ helloWorld = do printLine "Hello World"
 
 > List.reverse [1,2,3,4]
 > 4 + 6
+
+main : '{IO, Exception} ()
+main = do
+  printLine "xxx"

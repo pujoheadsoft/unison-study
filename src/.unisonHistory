@@ -1,0 +1,41 @@
+find
+update
+edit mySquare
+test
+tesy
+find
+move square mySquare
+test
+view square.tests.prop1
+update
+view square.test.prop1
+update
+view square.test.prop1
+update
+view
+view square.tests.prop1
+update
+view helloWorld
+view
+find reverse
+ls lib.base.data.List
+help compile
+help update
+compile main scratch.u
+update
+compile main scratch.u
+help compile
+compile main
+help compile
+compile scratch.u
+compile helloWorld
+compile helloWorld scratch.u
+add scratch.u
+help compile
+compile helloWorld scratch.u
+compile helloWorld scratch
+help compile
+run compile
+help run
+run -h
+run helloWorld

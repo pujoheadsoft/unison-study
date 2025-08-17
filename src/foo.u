@@ -1,6 +1,23 @@
+mySquare : Nat -> Nat
+mySquare x =
+  sum (map (x -> x * 2 + 1) (range 0 x))
+
+sum : [Nat] -> Nat
+sum = foldLeft (+) 0
+
 square : Nat -> Nat
 square x =
   use Nat *
   x * x
 
 > square 4
+
+test> square.tests.ex1 =
+  verify do ensureEqual (square 4) 16
+
+test> square.tests.prop1 =
+  verify do
+    Each.repeat 100
+    a = Random.natIn 0 100
+    b = Random.natIn 0 100
+    ensure (square a * square b == square (a * b))
