@@ -62,22 +62,44 @@ unique ability Ask a where
 unique ability Emit a where
   emit : a -> ()
 
-emitAsk : '{Emit a, Ask a} ()
-emitAsk = do
-  askValue = Ask.ask
-  Emit.emit askValue
-
-ask.handler : a -> Request {g, Ask a} r -> {g} r
+ask.handler : a -> Request {e, Ask a} r -> {e} r
 ask.handler v = cases
   { a }            -> a
   { Ask.ask -> k } -> handle k v with ask.handler v
 
-exampleAsk : '{Ask Text, IO, Exception} ()
-exampleAsk = do
+emit.handler : Request {e, Emit Text} r -> {e, IO, Exception} r
+emit.handler = cases
+  { a } -> a
+  { Emit.emit msg -> k } -> handle
+    printLine("Emit: " ++ msg)
+    k ()
+  with emit.handler
+
+ask.example : '{Ask Text, IO, Exception} ()
+ask.example = do
   v = Ask.ask
   printLine v
 
-runExampleAsk : '{IO, Exception} ()
-runExampleAsk = do
-  handle exampleAsk() with ask.handler "Hello"
+emit.example : '{Emit Text, IO, Exception} ()
+emit.example = do Emit.emit "Hello"
+
+ask.runExample : '{IO, Exception} ()
+ask.runExample = do
+  handle ask.example() with ask.handler "Hello"
+
+emit.runExample : '{IO, Exception} ()
+emit.runExample = do
+  handle emit.example() with emit.handler
+
+composed.emitAsk : '{Emit a, Ask a} ()
+composed.emitAsk = do
+  askValue = Ask.ask
+  Emit.emit askValue
+
+composed.runEmitAsk : '{IO, Exception} ()
+composed.runEmitAsk = do
+  handle
+    handle emitAsk()
+    with ask.handler "call runEmitAsk"
+  with emit.handler
 

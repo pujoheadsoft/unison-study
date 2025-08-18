@@ -1,3 +1,20 @@
+run ask.runExample
+run emit.runExample
+update
+run emit.runExample
+run composed.runEmitAsk
+update
+add
+run runEmitAsk
+update
+run runEmitAsk
+update
+add
+run emit.runExample
+find
+update
+find
+add
 run runExampleAsk
 run helloWorld
 helloWorld
