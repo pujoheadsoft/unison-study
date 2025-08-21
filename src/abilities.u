@@ -71,7 +71,7 @@ emit.handler : Request {e, Emit Text} r -> {e, IO, Exception} r
 emit.handler = cases
   { a } -> a
   { Emit.emit msg -> k } -> handle
-    printLine("Emit: " ++ msg)
+    printLine("Emit " ++ msg)
     k ()
   with emit.handler
 
@@ -91,15 +91,17 @@ emit.runExample : '{IO, Exception} ()
 emit.runExample = do
   handle emit.example() with emit.handler
 
-composed.emitAsk : '{Emit a, Ask a} ()
+composed.emitAsk : '{Emit a, Ask a, IO, Exception} ()
 composed.emitAsk = do
+  printLine("Start")
   askValue = Ask.ask
   Emit.emit askValue
+  printLine("End")
 
 composed.runEmitAsk : '{IO, Exception} ()
 composed.runEmitAsk = do
   handle
-    handle emitAsk()
-    with ask.handler "call runEmitAsk"
+    handle composed.emitAsk()
+    with ask.handler "Ask Value"
   with emit.handler
 
